@@ -7,6 +7,9 @@ const submissionsSchema = new Schema({
         ref: 'User',
         required: true
     },
+    imgUrl: {
+        type: String,
+    },
     title: {
         type: String,
         required: true
