@@ -24,8 +24,23 @@ userRouter.post('/', (req, res, next) => {
 		return res.status(201).send(user)
 	})
 })
+// get user(s) by search term
+userRouter.get('/search', (req, res, next) => {
+    // search term
+    const { user } = req.query
+    // creates a regular expression out of the string "user"
+    const pattern = new RegExp(user) // -- /user/
+    //$options: 'i'  Case insensitive -lower or uppercase
+    User.find({ email: { $regex: pattern, $options: 'i' } }, (err, users) => {
+        if (err) {
+            res.status(500)
+            return next(err)
+        }
+        return res.status(200).send(users)
+    })
+})
 
-// find a specific user
+// find a specific user by id
 userRouter.get('/:userId', (req, res, next) => {
 	User.find({ _id: req.params.userId }, (err, foundUser) => {
 		if (err) {
@@ -36,21 +51,6 @@ userRouter.get('/:userId', (req, res, next) => {
 	})
 })
 
-// get user(s) by search term
-userRouter.get('/search', (req, res, next) => {
-	// search term
-	const { user } = req.query
-	// creates a regular expression out of the string "user"
-	const pattern = new RegExp(user) // -- /user/
-	//$options: 'i'  Case insensitive -lower or uppercase
-	User.find({ name: { $regex: pattern, $options: 'i' } }, (err, users) => {
-		if (err) {
-			res.status(500)
-			return next(err)
-		}
-		return res.status(200).send(users)
-	})
-})
 
 // update user
 userRouter.put('/:userId', (req, res, next) => {
